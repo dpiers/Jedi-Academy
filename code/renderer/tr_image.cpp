@@ -1602,14 +1602,14 @@ void R_LoadDataImage( const char *name, byte **pic, int *width, int *height)
 	}
 //	MD_PushTag(TAG_DATA_IMAGE_LOAD);
 
-	strcpy(work, name);
+	Q_strncpyz(work, name, sizeof(work));
 
 	COM_DefaultExtension( work, sizeof( work ), ".png" );
 	LoadPNG8( work, pic, width, height );
-	
+
 	if (!pic || !*pic)
 	{ //both png and jpeg failed, try targa
-		strcpy(work, name);
+		Q_strncpyz(work, name, sizeof(work));
 		COM_DefaultExtension( work, sizeof( work ), ".tga" );
 		LoadTGA( work, pic, width, height );
 	}

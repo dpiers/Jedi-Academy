@@ -41,8 +41,10 @@ COM_StripExtension
 ============
 */
 void COM_StripExtension( const char *in, char *out ) {
-	while ( *in && *in != '.' ) {
+	int len = 0;
+	while ( *in && *in != '.' && len < MAX_QPATH - 1 ) {
 		*out++ = *in++;
+		len++;
 	}
 	*out = 0;
 }
@@ -78,7 +80,7 @@ void COM_DefaultExtension (char *path, int maxSize, const char *extension ) {
 	}
 	else
 	{
-		strcat(path, extension);
+		Q_strcat(path, maxSize, extension);
 	}
 }
 
@@ -808,7 +810,7 @@ void QDECL Com_sprintf( char *dest, int size, const char *fmt, ...) {
 	char		bigbuffer[1024];
 
 	va_start (argptr,fmt);
-	len = vsprintf (bigbuffer,fmt,argptr);
+	len = vsnprintf (bigbuffer, sizeof(bigbuffer), fmt, argptr);
 	va_end (argptr);
 	if ( len >= sizeof( bigbuffer ) ) {
 		Com_Error( ERR_FATAL, "Com_sprintf: overflowed bigbuffer" );
@@ -838,7 +840,7 @@ char	* QDECL va( const char *format, ... ) {
 	index++;
 
 	va_start (argptr, format);
-	len = vsprintf (buf, format,argptr);
+	len = vsnprintf (buf, sizeof(buffers[0]), format, argptr);
 	va_end (argptr);
 
 	assert(len<sizeof(buffers[0]));
@@ -889,7 +891,10 @@ char *Info_ValueForKey( const char *s, const char *key ) {
 		{
 			if (!*s)
 				return "";
-			*o++ = *s++;
+			if (o - pkey < MAX_INFO_KEY - 1)
+				*o++ = *s++;
+			else
+				s++;
 		}
 		*o = 0;
 		s++;
@@ -898,7 +903,10 @@ char *Info_ValueForKey( const char *s, const char *key ) {
 
 		while (*s != '\\' && *s)
 		{
-			*o++ = *s++;
+			if (o - value[valueindex] < MAX_INFO_VALUE - 1)
+				*o++ = *s++;
+			else
+				s++;
 		}
 		*o = 0;
 
@@ -1073,7 +1081,7 @@ void Info_SetValueForKey( char *s, const char *key, const char *value ) {
 		return;
 	}
 
-	strcat (s, newi);
+	Q_strcat (s, MAX_INFO_STRING, newi);
 }
 
 /*

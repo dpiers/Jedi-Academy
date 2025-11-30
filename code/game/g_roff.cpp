@@ -111,7 +111,7 @@ static void G_RoffNotetrackCallback( gentity_t *cent, const char *notetrack)
 
 		if (posoffsetGathered < 3)
 		{
-			sprintf(errMsg, "Offset position argument for 'effect' type is invalid.");
+			Com_sprintf(errMsg, sizeof(errMsg), "Offset position argument for 'effect' type is invalid.");
 			goto functionend;
 		}
 
@@ -398,7 +398,7 @@ int G_LoadRoff( const char *fileName )
 	}
 
 	// The actual path
-	sprintf( file, "%s/%s.rof", Q3_SCRIPT_DIR, fileName );
+	Com_sprintf( file, sizeof(file), "%s/%s.rof", Q3_SCRIPT_DIR, fileName );
 
 	// See if I'm already precached
 	for ( i = 0; i < num_roffs; i++ )

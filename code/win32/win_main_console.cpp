@@ -77,9 +77,9 @@ char *Sys_Cwd( void )
 	static char cwd[MAX_OSPATH];
 
 #ifdef XBOX_DEMO
-	strcpy( cwd, demoBasePath );
+	Q_strncpyz( cwd, demoBasePath, sizeof(cwd) );
 #else
-	strcpy(cwd, "d:");
+	Q_strncpyz(cwd, "d:", sizeof(cwd));
 #endif
 
 	return cwd;
@@ -109,11 +109,11 @@ void Sys_Error( const char *error, ... ) {
         char                text[256];
 
         va_start (argptr, error);
-        vsprintf (text, error, argptr);
+        vsnprintf (text, sizeof(text), error, argptr);
         va_end (argptr);
 
 #ifdef _GAMECUBE
-        printf(text);
+        printf("%s", text);
 #else
         OutputDebugString(text);
 #endif
@@ -163,7 +163,7 @@ sysEvent_t Sys_GetEvent( void ) {
 void Sys_Print(const char *msg)
 {
 #ifdef _GAMECUBE
-	printf(msg);
+	printf("%s", msg);
 #else
 	OutputDebugString(msg);
 #endif
@@ -221,12 +221,12 @@ void Sys_Log( const char *file, const void *buffer, int size, bool flush ) {
 		}
 
 		cur = &files[num_files++];
-		strcpy(cur->name, file);
+		Q_strncpyz(cur->name, file, sizeof(cur->name));
 		cur->handle = NULL;
 	}
 
 	char fullname[MAX_QPATH];
-	sprintf(fullname, "d:\\%s", cur->name);
+	Com_sprintf(fullname, sizeof(fullname), "d:\\%s", cur->name);
 	if (!cur->handle)
 	{
 		cur->handle = fopen(fullname, "wb");

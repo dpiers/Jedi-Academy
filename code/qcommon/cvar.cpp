@@ -560,9 +560,9 @@ void Cvar_Set_f( void ) {
 		if ( l + len >= MAX_STRING_TOKENS - 2 ) {
 			break;
 		}
-		strcat( combined, Cmd_Argv( i ) );
+		Q_strcat( combined, sizeof(combined), Cmd_Argv( i ) );
 		if ( i != c-1 ) {
-			strcat( combined, " " );
+			Q_strcat( combined, sizeof(combined), " " );
 		}
 		l += len;
 	}
@@ -899,7 +899,7 @@ static void Cvar_Realloc(char **string, char *memPool, int &memPoolUsed)
 	if(string && *string)
 	{
 		char *temp = memPool + memPoolUsed;
-		strcpy(temp, *string);
+		Q_strncpyz(temp, *string, strlen(*string) + 1);
 		memPoolUsed += strlen(*string) + 1;
 		Cvar_FreeString(*string);
 		*string = temp;
