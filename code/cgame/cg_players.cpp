@@ -1166,7 +1166,44 @@ static void CG_PlayerAnimEvents( int animFileIndex, qboolean torso, int oldFrame
 #ifdef _XBOX
 	using dllNamespace::hstring;
 #endif
-	hstring myModel = g_entities[entNum].NPC_type;		//apparently NPC_type is always the same as the model name???
+	// Get the actual model name from the ghoul2 model filename instead of NPC_type.
+	// NPC_type can differ from the model name (e.g., NPC "stormtrooper2" uses playerModel "stormtrooper"),
+	// and model-specific animation events are keyed by the model directory name.
+	hstring myModel;
+	if ( g_entities[entNum].playerModel >= 0
+		&& g_entities[entNum].ghoul2.size() > 0
+		&& g_entities[entNum].ghoul2[g_entities[entNum].playerModel].mFileName[0] )
+	{
+		// mFileName is like "models/players/stormtrooper/model.glm" - extract "stormtrooper"
+		const char *modelPath = g_entities[entNum].ghoul2[g_entities[entNum].playerModel].mFileName;
+		const char *modelStart = strstr(modelPath, "models/players/");
+		if (modelStart)
+		{
+			modelStart += 15; // skip "models/players/"
+			const char *modelEnd = strchr(modelStart, '/');
+			if (modelEnd && modelEnd > modelStart)
+			{
+				char modelName[MAX_QPATH];
+				size_t len = modelEnd - modelStart;
+				if (len >= MAX_QPATH)
+					len = MAX_QPATH - 1;
+				Q_strncpyz(modelName, modelStart, len + 1);
+				myModel = modelName;
+			}
+			else
+			{
+				myModel = g_entities[entNum].NPC_type;
+			}
+		}
+		else
+		{
+			myModel = g_entities[entNum].NPC_type;
+		}
+	}
+	else
+	{
+		myModel = g_entities[entNum].NPC_type;
+	}
 
 
 	// Check for anim event
