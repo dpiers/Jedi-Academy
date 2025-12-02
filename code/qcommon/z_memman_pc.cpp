@@ -910,7 +910,7 @@ char *CopyString( const char *in ) {
 	}
 
 	out = (char *) S_Malloc (strlen(in)+1);
-	strcpy (out, in);
+	Q_strncpyz (out, in, strlen(in)+1);
 
 	Z_Label(out,in);
 

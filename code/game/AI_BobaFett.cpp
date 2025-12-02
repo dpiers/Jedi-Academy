@@ -117,7 +117,7 @@ void	Boba_Printf(const char * format, ...)
 
 	// Tack On The Standard Format Around The Given Format
 	//-----------------------------------------------------
-	sprintf(nFormat, "[BOBA %8d] %s\n", level.time, format);
+	Com_sprintf(nFormat, sizeof(nFormat), "[BOBA %8d] %s\n", level.time, format);
 
 
 	// Resolve Remaining Elipsis Parameters Into Newly Formated String

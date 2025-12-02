@@ -489,13 +489,13 @@ void hstring::Init(const char *str)
 		id=HashHelper().FindNext();
 	}
 	char *raw=ThePool().Alloc(strlen(str),mId);
-	strcpy(raw,str);
+	Q_strncpyz(raw,str,strlen(str)+1);
 	HashHelper().Add(hash,mId);
 #ifdef _DEBUG
 	int test;
 	raw=TheDebugPool().Alloc(strlen(str),test);
 	assert(test==mId);
-	strcpy(raw,str);
+	Q_strncpyz(raw,str,strlen(str)+1);
 #endif
 
 }
